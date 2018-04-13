@@ -1,21 +1,25 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './views/Home.vue';
+import Firmware from './views/Firmware.vue';
+import NotFound from './views/NotFound';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      component: Home,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: About
-    }
-  ]
-})
+      path: '/firmware/:id',
+      props: true,
+      component: Firmware,
+    },
+    {
+      path: '*',
+      component: NotFound,
+    },
+  ],
+});

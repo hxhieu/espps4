@@ -11,6 +11,7 @@
 
 #include <FS.h>
 #include <ArduinoJson.h>
+#include <rBase64.h>
 
 //#define NO_CONFIG 1
 bool noConfig = false;
@@ -236,7 +237,7 @@ String apiGetPayloads(void){
     return json;
 }
 
-void handleApiRequest(String path){
+void handleApiRequest(String path) {
     String json;
     HTTPMethod m = server.method();
     String verb = "GET";
@@ -253,6 +254,12 @@ void handleApiRequest(String path){
     DBG_OUTPUT_PORT.println(verb + " " + path + " -> " + json);
 }
 
+void handleExploitEntry(String path) {
+  path = path.substring( path.lastIndexOf( "/" ) );
+  rbase64.decode(path);
+  DBG_OUTPUT_PORT.println("Serving " + String(rbase64.result()));
+}
+
 void setup( void ){
 
   pinMode( resetPin, INPUT_PULLUP );
@@ -263,7 +270,7 @@ void setup( void ){
   //DBG_OUTPUT_PORT.setDebugOutput( true ); //causing UART problems
   SPIFFS.begin();
 
-  Dir dir = SPIFFS.openDir( "/" );
+  //Dir dir = SPIFFS.openDir( "/" );
 
   if ( digitalRead( resetPin ) == LOW ) {
 
@@ -407,8 +414,14 @@ void setup( void ){
     String path = server.uri();
 
     // API wildcard
-    if (path.indexOf("/api/") >= 0){
+    if (path.indexOf("/api/") >= 0) {
       handleApiRequest(path);
+      return;
+    }
+
+    // Entry point wildcard
+    if (path.indexOf("/entry/") >= 0) {
+      handleExploitEntry(path);
       return;
     }
     
