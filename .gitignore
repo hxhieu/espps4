@@ -20,4 +20,4 @@ yarn-error.log*
 *.sln
 
 /src/server/espps4/data/*
-!/src/server/espps4/data/payload_*.js
+!/src/server/espps4/data/.gitkeep
