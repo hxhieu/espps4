@@ -1,9 +1,8 @@
 <template>
   <div class="firmwares">
     <h1>{{ id }}</h1>
-    <router-link class="back" to="/">BACK</router-link>
     <div class="clearfix">
-      <a v-for="p in availablePayloads" :key="p.key" class="button pull-left" :href="`${hostAddress}entry/{p.key}`">{{ p.name }}</a>
+      <a v-for="p in availablePayloads" :key="p.key" class="button pull-left" :href="`${hostAddress}entry/${p.key}`">{{ p.name }}</a>
     </div>
   </div>
 </template>

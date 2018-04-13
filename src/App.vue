@@ -59,15 +59,13 @@ export default {
 
 html,
 body {
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: @primary-colour;
   font-size: 30px;
   overflow: hidden;
-
-  h1 {
-    display: inline-block;
-  }
+  text-align: center;
 
   a.back {
     margin-left: 20px;
@@ -90,14 +88,18 @@ body {
   .button {
     font-size: 1em;
     text-decoration: none;
-    border: 2px solid;
+    border: 2px solid @primary-colour;
     padding: 20px 40px;
     margin: 10px;
     transition: 0.25s all linear;
+    color: @primary-colour;
     &:hover {
       background: @primary-colour;
       color: #fff;
     }
+  }
+  a {
+    color: @primary-colour;
   }
 }
 </style>

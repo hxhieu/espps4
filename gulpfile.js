@@ -12,12 +12,14 @@ var js405 = [
     'exploits/vtx-405/gadgets.js',
     'exploits/vtx-405/rop.js',
   ],
-  jsDest = './exploits/vtx-405';
+  output405 = 'exploit_4.05.js',
+  output455 = 'exploit_4.55.js',
+  jsDest = './public';
 
 gulp.task('vtx-405', function() {
   return gulp
     .src(js405, { base: 'exploits/vtx-405/' })
-    .pipe(concat('vtx-405.js'))
+    .pipe(concat(output405))
     .pipe(uglify())
     .pipe(gulp.dest(jsDest));
 });

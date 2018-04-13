@@ -1,0 +1,13 @@
+<update_data_list>
+	<region id="{{REGION}}">
+		<system_pup label="4.55" sdk_version="04.550.000" version="04.550.000">
+			<update_data update_type="full">
+				<image size="339864576">http://d{{REGION}}01.ps4.update.playstation.net/update/ps4/image/2017_0411/sys_9c85ce3a255719d56f2aa07f4be22f02/PS4UPDATE.PUP</image>
+			</update_data>
+		</system_pup>
+		<recovery_pup type="default">
+			<system_pup label="4.55" sdk_version="04.550.000" version="04.550.000"/>
+			<image size="918867456">http://d{{REGION}}01.ps4.update.playstation.net/update/ps4/image/2017_0411/rec_6c28dbf66f63b7d3953491cc656f4e2d/PS4UPDATE.PUP</image>
+		</recovery_pup>
+	</region>
+</update_data_list>
