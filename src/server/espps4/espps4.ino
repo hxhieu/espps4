@@ -269,7 +269,7 @@ void handleExploitEntry(String path) {
   }
 
   // Read the exploit.html
-  String html = "<html><head><title>ESPPS4 Entry Point</title> <script src=" + payload + "></script> </head><body> <script src=" + "/exploit_4.05.js" + "></script> <pre id='console' style='font-size: 20px'></pre></body></html>";
+  String html = "<html><head><title>ESPPS4 Entry Point</title> <script src=" + payload + "></script> </head><body> <script src=" + "/exploit_4.05.js" + "></script> <h1 style='display:none' id=clck>...</h1> <pre id='console' style='font-size: 20px'></pre></body></html>";
 
   DBG_OUTPUT_PORT.println(html);
 
