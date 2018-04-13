@@ -19,4 +19,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-/src/server/espps4/data
+/src/server/espps4/data/*
+!/src/server/espps4/data/payload_*.js
