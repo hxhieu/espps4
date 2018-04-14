@@ -1,12 +1,12 @@
 <template>
   <div id="espps4">
-    <router-view></router-view>
-    <footer>
+    <router-view class="main"></router-view>
+    <section class="menu">
       <router-link to="/">HOME</router-link>
       <router-link to="/payloads">PAYLOADS</router-link>
       <router-link to="/credits">CREDITS</router-link>
       <router-link to="/settings">SETTINGS</router-link>
-    </footer>
+    </section>
   </div>
 </template>
 
@@ -48,8 +48,7 @@ export default {
 </script>
 
 <style lang="less">
-@primary-colour: #2c3e50;
-@secondary-colour: #0066cc;
+@import './variables';
 
 .pull-left {
   float: left;
@@ -75,8 +74,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: @primary-colour;
   font-size: 30px;
-  overflow: hidden;
   text-align: center;
+  overflow-y: scroll;
   text-shadow: 1px 1px 2px rgba(50, 50, 50, 0.5);
   background: rgba(255, 255, 255, 1);
   background: -moz-linear-gradient(
@@ -128,17 +127,24 @@ body {
 
   #espps4 {
     max-width: 1024px;
-    margin: 20px auto;
+    margin: 0 auto;
 
-    footer {
+    .main {
+      padding: 20px 0;
+    }
+
+    .menu {
       position: fixed;
-      bottom: 40px;
+      top: 0;
       left: 0;
       right: 0;
       text-align: center;
       a {
-        margin: 20px;
+        display: inline-block;
+        margin: 10px 20px;
+        font-size: 0.5em;
       }
+      background: #fff;
     }
   }
 
@@ -148,8 +154,9 @@ body {
     border: 2px solid @primary-colour;
     padding: 20px 40px;
     margin: 10px;
-    transition: 0.25s all linear;
+    transition: @hover-transition;
     color: @primary-colour;
+    display: inline-block;
     &:hover {
       background: @primary-colour;
       color: #fff;
@@ -157,6 +164,10 @@ body {
   }
   a {
     color: @secondary-colour;
+    transition: @hover-transition;
+    &:hover {
+      color: @primary-colour;
+    }
   }
 }
 </style>

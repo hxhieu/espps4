@@ -1,10 +1,11 @@
 <template>
   <div class="gauge-bar" :style="{'height': totalHeight}">
-      <div class="max-value" :style="{'font-size': textSize, 'top': -textSize - gap}">{{ maxDisplay }}</div>
+      <div v-if="showTotal" class="max-value" :style="{'font-size': textSize, 'top': -textSize - gap}">{{ maxDisplay }}</div>
       <div class="gauge-border" :style="{'border-width': borderWidth, 'border-color': border, 'padding': gap}">
           <div class="gauge-fill" :style="{'width': pctDisplay, 'background': fill}">
-              <div class="current-value" :style="{'font-size': textSize}">{{ currentDisplay }}</div>
+              <div class="current-value" :style="innerTextStyle">{{ currentDisplay }}</div>
           </div>
+          <div class="pct-value" :style="innerTextStyle">{{ pctDisplay }}</div>
       </div>
   </div>
 </template>
@@ -25,6 +26,7 @@ export default {
     barHeight: Number,
     borderThickness: Number,
     borderGap: Number,
+    showTotal: Boolean,
   },
 
   created() {
@@ -66,9 +68,9 @@ export default {
       return this.borderColour || '#2c3e50';
     },
     fill() {
-      return this.pct > (this.dangerThreshold || 0.1)
-        ? this.fillColour || '#2c3e50'
-        : this.dangerColour || '#b30000';
+      return this.pct > (this.dangerThreshold || 0.9)
+        ? this.dangerColour || '#b30000'
+        : this.fillColour || '#2c3e50';
     },
     gap() {
       return this.borderGap || 2;
@@ -77,11 +79,17 @@ export default {
       return this.borderThickness || 4;
     },
     totalHeight() {
-      const bar = this.barHeight || 20;
+      const bar = this.barHeight || 40;
       return bar + 2 * this.borderWidth + 2 * this.gap;
     },
     textSize() {
       return this.totalHeight * 0.5;
+    },
+    innerTextStyle() {
+      return {
+        'font-size': this.textSize,
+        'padding-top': (this.totalHeight - this.textSize) / 4,
+      };
     },
   },
 };
@@ -107,6 +115,14 @@ export default {
         color: #fff;
         text-align: center;
       }
+    }
+
+    .pct-value {
+      text-align: right;
+      font-weight: bold;
+      position: absolute;
+      right: 5;
+      top: 0;
     }
   }
 
