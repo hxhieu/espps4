@@ -17,9 +17,7 @@ export const HttpClient = function() {
   //   }
   // };
 
-  const xhr = new XMLHttpRequest();
-
-  const handleResult = callback => {
+  const handleResult = (callback, xhr) => {
     const DONE = 4;
     const OK = 200;
     if (xhr.readyState === DONE) {
@@ -34,11 +32,12 @@ export const HttpClient = function() {
   const get = (url, callback) => {
     if (typeof callback !== 'function') return;
 
+    const xhr = new XMLHttpRequest();
     xhr.open('GET', `api/${url}`);
     xhr.send();
 
     xhr.onreadystatechange = () => {
-      handleResult(callback);
+      handleResult(callback, xhr);
     };
   };
 
@@ -69,12 +68,17 @@ export const HttpClient = function() {
     get('payloads', callback);
   };
 
+  const getFileSystem = callback => {
+    get('file-system', callback);
+  };
+
   return {
     // get,
     // post,
     // put,
     // del,
     getPayloads,
+    getFileSystem,
   };
 };
 

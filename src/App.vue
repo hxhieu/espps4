@@ -2,7 +2,10 @@
   <div id="espps4">
     <router-view></router-view>
     <footer>
+      <router-link to="/">HOME</router-link>
+      <router-link to="/payloads">PAYLOADS</router-link>
       <router-link to="/credits">CREDITS</router-link>
+      <router-link to="/settings">SETTINGS</router-link>
     </footer>
   </div>
 </template>
@@ -46,6 +49,7 @@ export default {
 
 <style lang="less">
 @primary-colour: #2c3e50;
+@secondary-colour: #0066cc;
 
 .pull-left {
   float: left;
@@ -57,6 +61,13 @@ export default {
   clear: both;
 }
 
+.hints {
+  font-size: 0.65em;
+  display: inline-block;
+  color: #eee;
+  margin-top: 10px;
+}
+
 html,
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -66,6 +77,50 @@ body {
   font-size: 30px;
   overflow: hidden;
   text-align: center;
+  text-shadow: 1px 1px 2px rgba(50, 50, 50, 0.5);
+  background: rgba(255, 255, 255, 1);
+  background: -moz-linear-gradient(
+    left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 246, 246, 1) 47%,
+    rgba(237, 237, 237, 1) 100%
+  );
+  background: -webkit-gradient(
+    left top,
+    right top,
+    color-stop(0%, rgba(255, 255, 255, 1)),
+    color-stop(47%, rgba(246, 246, 246, 1)),
+    color-stop(100%, rgba(237, 237, 237, 1))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 246, 246, 1) 47%,
+    rgba(237, 237, 237, 1) 100%
+  );
+  background: -o-linear-gradient(
+    left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 246, 246, 1) 47%,
+    rgba(237, 237, 237, 1) 100%
+  );
+  background: -ms-linear-gradient(
+    left,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 246, 246, 1) 47%,
+    rgba(237, 237, 237, 1) 100%
+  );
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(246, 246, 246, 1) 47%,
+    rgba(237, 237, 237, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(
+      startColorstr='#ffffff',
+      endColorstr='#ededed',
+      GradientType=1
+    );
 
   a.back {
     margin-left: 20px;
@@ -77,11 +132,13 @@ body {
 
     footer {
       position: fixed;
-      bottom: 0;
+      bottom: 40px;
       left: 0;
       right: 0;
-      padding: 20px 0;
       text-align: center;
+      a {
+        margin: 20px;
+      }
     }
   }
 
@@ -99,7 +156,7 @@ body {
     }
   }
   a {
-    color: @primary-colour;
+    color: @secondary-colour;
   }
 }
 </style>

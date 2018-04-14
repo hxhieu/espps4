@@ -15,7 +15,7 @@
 
 //#define NO_CONFIG 1
 bool noConfig = false;
-#define DBG_OUTPUT_PORT Serial
+#define DEBUG Serial
 
 //DNS settings
 const byte DNS_PORT = 53;
@@ -53,7 +53,7 @@ String payload = "/henblock.bin";
 
 void uploadPayload() {
 
-  DBG_OUTPUT_PORT.println( ps4IP );
+  DEBUG.println( ps4IP );
   int tCounter = 0;
 
   while ( !ps4.connect( ps4IP.c_str(), ps4Port ) ) {
@@ -62,7 +62,7 @@ void uploadPayload() {
 
     if ( tCounter > 5000 ) {
 
-      DBG_OUTPUT_PORT.println( "Couldn't connect" );
+      DEBUG.println( "Couldn't connect" );
       jsCounter = 0;
       ps4.stop();
       return;
@@ -75,14 +75,14 @@ void uploadPayload() {
 
   if ( !file ) {
 
-    DBG_OUTPUT_PORT.printf( "%s couldn't be opened!\n", payload.c_str() );
+    DEBUG.printf( "%s couldn't be opened!\n", payload.c_str() );
     ps4.stop();
     return;
 
   }
   int filelen = file.size();
-  //DBG_OUTPUT_PORT.println( payload );
-  DBG_OUTPUT_PORT.printf( "Sending payload %s to %s port %d\r\n", file.name(), ps4IP.c_str(), ps4Port );
+  //DEBUG.println( payload );
+  DEBUG.printf( "Sending payload %s to %s port %d\r\n", file.name(), ps4IP.c_str(), ps4Port );
 
   //while ( ps4.available() ) { ps4.read(); }
 
@@ -92,18 +92,18 @@ void uploadPayload() {
 
     digitalWrite ( LED_BUILTIN, !digitalRead( LED_BUILTIN ) );
     //delay( PAYLOAD_WAIT );
-    //while ( ps4.available() ) { DBG_OUTPUT_PORT.println( ps4.read() ); }
+    //while ( ps4.available() ) { DEBUG.println( ps4.read() ); }
 
     int i = file.readBytes(plPacket, PACKET_SIZE );
     totalSent += ps4.write( ( const uint8_t* )plPacket, i );
-    DBG_OUTPUT_PORT.printf( "%d\%%\n", ( int )( ( totalSent * 100 ) / filelen ) );
+    DEBUG.printf( "%d\%%\n", ( int )( ( totalSent * 100 ) / filelen ) );
     ps4.flush();
     digitalWrite ( LED_BUILTIN, HIGH );
 
   }
 
   file.close();
-  DBG_OUTPUT_PORT.println( "Payload sent" );
+  DEBUG.println( "Payload sent" );
   ps4.stop();
   jsCounter = 0;
 
@@ -116,7 +116,7 @@ void loadConfig() {
 
   if ( !file ) {
 
-    DBG_OUTPUT_PORT.println( "settings.ini couldn't be opened!" );
+    DEBUG.println( "settings.ini couldn't be opened!" );
     return;
 
   }
@@ -139,7 +139,7 @@ void loadConfig() {
   }
 
   file.close();
-  DBG_OUTPUT_PORT.println( "settings.ini loaded" );
+  DEBUG.println( "settings.ini loaded" );
 
 }
 
@@ -158,7 +158,7 @@ void saveConfig() {
   file = SPIFFS.open( "/settings.ini", "r" );
   char tempChar[ 400 ];
   file.readBytes( tempChar, 400 );
-  DBG_OUTPUT_PORT.println( tempChar );
+  DEBUG.println( tempChar );
   file.close();
   loadConfig();
 
@@ -183,7 +183,7 @@ String getContentType( String filename ) {
 bool handleFileRead( String path ) {
 
   path = path.substring( path.lastIndexOf( "/" ) );
-  //DBG_OUTPUT_PORT.println( path );
+  //DEBUG.println( path );
   ps4IP = server.client().remoteIP().toString();
 
   if ( path.endsWith( ".html" ) || path.endsWith( ".htm" ) ) {
@@ -194,11 +194,11 @@ bool handleFileRead( String path ) {
   }
 
   if ( path.endsWith( ".js" ) ) jsCounter ++;
-  DBG_OUTPUT_PORT.println( "handleFileRead: " + path );
+  DEBUG.println( "handleFileRead: " + path );
   if ( path.endsWith( "/" ) ) path = "/index.html";
   if ( path.length()  < 3 ) path = "/index.html";
   //if ( !path.startsWith( "/" ) ) path = "/" + path;
-  //if ( path.indexOf("#")) DBG_OUTPUT_PORT.println( path.substring(path.indexOf( "#" ) + 1 ) );
+  //if ( path.indexOf("#")) DEBUG.println( path.substring(path.indexOf( "#" ) + 1 ) );
   //set up trigger for payload transfer
   if ( path.endsWith( "idc-index.html" ) ) JS_MAX = 7;
   if ( path.endsWith( "specter-index.html" ) ) JS_MAX = 5;
@@ -237,6 +237,78 @@ String apiGetPayloads(void) {
   return json;
 }
 
+
+float spiffsTotalBytes;
+float spiffsUsedBytes;
+
+void startSPIFFS(void) {
+  SPIFFS.begin();
+  FSInfo fs_info;
+  SPIFFS.info(fs_info);
+
+  spiffsTotalBytes = (float)fs_info.totalBytes;
+  spiffsUsedBytes = (float)fs_info.usedBytes;
+  float fileTotalKB = spiffsTotalBytes / 1024.0;
+  float fileUsedKB =  spiffsUsedBytes / 1024.0;
+
+  float flashChipSize = (float)ESP.getFlashChipSize() / 1024.0 / 1024.0;
+  float realFlashChipSize = (float)ESP.getFlashChipRealSize() / 1024.0 / 1024.0;
+  float flashFreq = (float)ESP.getFlashChipSpeed() / 1000.0 / 1000.0;
+  FlashMode_t ideMode = ESP.getFlashChipMode();
+
+  DEBUG.printf("\n#####################\n");
+
+  DEBUG.printf("__________________________\n\n");
+  DEBUG.println("Firmware: ");
+  DEBUG.printf("    Chip Id: %08X\n", ESP.getChipId());
+  DEBUG.print("    Core version: "); DEBUG.println(ESP.getCoreVersion());
+  DEBUG.print("    SDK version: "); DEBUG.println(ESP.getSdkVersion());
+  DEBUG.print("    Boot version: "); DEBUG.println(ESP.getBootVersion());
+  DEBUG.print("    Boot mode: "); DEBUG.println(ESP.getBootMode());
+
+
+  DEBUG.printf("__________________________\n\n");
+
+  DEBUG.println("Flash chip information: ");
+  DEBUG.printf("    Flash chip Id: %08X (for example: Id=001640E0  Manuf=E0, Device=4016 (swap bytes))\n", ESP.getFlashChipId());
+  DEBUG.printf("    Sketch thinks Flash RAM is size: ");  DEBUG.print(flashChipSize); DEBUG.println(" MB");
+  DEBUG.print("    Actual size based on chip Id: "); DEBUG.print(realFlashChipSize); DEBUG.println(" MB ... given by (2^( \"Device\" - 1) / 8 / 1024");
+  DEBUG.print("    Flash frequency: "); DEBUG.print(flashFreq); DEBUG.println(" MHz");
+  DEBUG.printf("    Flash write mode: %s\n", (ideMode == FM_QIO ? "QIO" : ideMode == FM_QOUT ? "QOUT" : ideMode == FM_DIO ? "DIO" : ideMode == FM_DOUT ? "DOUT" : "UNKNOWN"));
+
+  DEBUG.printf("__________________________\n\n");
+
+  DEBUG.println("File system (SPIFFS): ");
+  DEBUG.print("    Total KB: "); DEBUG.print(fileTotalKB); DEBUG.println(" KB");
+  DEBUG.print("    Used KB: "); DEBUG.print(fileUsedKB); DEBUG.println(" KB");
+  DEBUG.printf("    Block size: %lu\n", fs_info.blockSize);
+  DEBUG.printf("    Page size: %lu\n", fs_info.pageSize);
+  DEBUG.printf("    Maximum open files: %lu\n", fs_info.maxOpenFiles);
+  DEBUG.printf("    Maximum path length: %lu\n\n", fs_info.maxPathLength);
+
+  Dir dir = SPIFFS.openDir("/");
+  DEBUG.println("SPIFFS directory {/} :");
+  while (dir.next()) {
+    DEBUG.print("  "); DEBUG.println(dir.fileName());
+  }
+
+  DEBUG.printf("__________________________\n\n");
+
+  DEBUG.printf("CPU frequency: %u MHz\n\n", ESP.getCpuFreqMHz());
+  DEBUG.print("#####################");
+}
+
+String apiGetSPIFFS(void) {
+  StaticJsonBuffer<80> jsonBuffer;
+  JsonObject& root = jsonBuffer.createObject();
+  root["total"] = spiffsTotalBytes;
+  root["used"] = spiffsUsedBytes;
+
+  String json;
+  root.printTo(json);
+  return json;
+}
+
 void handleApiRequest(String path) {
   String json;
   HTTPMethod m = server.method();
@@ -250,8 +322,12 @@ void handleApiRequest(String path) {
     json = apiGetPayloads();
     server.send(200, "application/json", json);
   }
+  else if (path.endsWith("/file-system")) {
+    json = apiGetSPIFFS();
+    server.send(200, "application/json", json);
+  }
 
-  DBG_OUTPUT_PORT.println(verb + " " + path + " -> " + json);
+  DEBUG.println(verb + " " + path + " -> " + json);
 }
 
 void handleExploitEntry(String path) {
@@ -259,7 +335,7 @@ void handleExploitEntry(String path) {
   rbase64.decode(path);
   String payload = rbase64.result();
 
-  DBG_OUTPUT_PORT.println(payload);
+  DEBUG.println(payload);
 
   File f = SPIFFS.open(payload, "r");
 
@@ -271,7 +347,7 @@ void handleExploitEntry(String path) {
   // Read the exploit.html
   String html = "<html><head><title>ESPPS4 Entry Point</title> <script src=" + payload + "></script> </head><body> <script src=" + "/exploit_4.05.js" + "></script> <h1 style='display:none' id=clck>...</h1> <pre id='console' style='font-size: 20px'></pre></body></html>";
 
-  DBG_OUTPUT_PORT.println(html);
+  DEBUG.println(html);
 
   server.send( 200, "text/html", html );
 }
@@ -281,16 +357,15 @@ void setup( void ) {
   pinMode( resetPin, INPUT_PULLUP );
   pinMode( LED_BUILTIN, OUTPUT );
   WiFi.forceSleepBegin();
-  DBG_OUTPUT_PORT.begin( 115200 );
-  DBG_OUTPUT_PORT.print( "\n" );
-  //DBG_OUTPUT_PORT.setDebugOutput( true ); //causing UART problems
-  SPIFFS.begin();
+  DEBUG.begin( 115200 );
+  DEBUG.print( "\n" );
+  //DEBUG.setDebugOutput( true ); //causing UART problems
 
-  //Dir dir = SPIFFS.openDir( "/" );
+  startSPIFFS();
 
   if ( digitalRead( resetPin ) == LOW ) {
 
-    DBG_OUTPUT_PORT.println( "Config loading bypassed!" );
+    DEBUG.println( "Config loading bypassed!" );
     noConfig = true;
     wifiMode = "ap";
 
@@ -308,36 +383,36 @@ void setup( void ) {
 
     if ( WiFi.softAPConfig( local_IP, gateway, subnet ) == false ) {
 
-      DBG_OUTPUT_PORT.println( "Couldn't create AP" );
+      DEBUG.println( "Couldn't create AP" );
 
     }
     else {
 
-      DBG_OUTPUT_PORT.printf( "Creating AP " );
-      DBG_OUTPUT_PORT.println( apName );
+      DEBUG.printf( "Creating AP " );
+      DEBUG.println( apName );
 
     }
 
     while ( WiFi.softAP( apName.c_str(), apKey.c_str() ) == false ) {
 
       delay( 500 );
-      DBG_OUTPUT_PORT.print( "." );
+      DEBUG.print( "." );
 
     }
 
     if ( WiFi.softAPIP() == IPAddress( 0, 0, 0, 0 ) ) revertToAP = true;
     else {
 
-      DBG_OUTPUT_PORT.println( "" );
-      DBG_OUTPUT_PORT.print( "Connected! IP address: " );
-      DBG_OUTPUT_PORT.println( WiFi.softAPIP() );
+      DEBUG.println( "" );
+      DEBUG.print( "Connected! IP address: " );
+      DEBUG.println( WiFi.softAPIP() );
 
     }
 
   }
   else {
 
-    DBG_OUTPUT_PORT.printf( "Connecting to %s\n", stName.c_str() );
+    DEBUG.printf( "Connecting to %s\n", stName.c_str() );
     WiFi.mode( WIFI_STA );
     WiFi.begin( stName.c_str(), stKey.c_str() );
 
@@ -346,7 +421,7 @@ void setup( void ) {
     while ( WiFi.status() != WL_CONNECTED ) {
 
       delay( 500 );
-      DBG_OUTPUT_PORT.print( "." );
+      DEBUG.print( "." );
 
       reconCounter++;
 
@@ -383,7 +458,7 @@ void setup( void ) {
       while ( WiFi.status() != WL_CONNECTED ) {
 
         delay( 500 );
-        DBG_OUTPUT_PORT.print( "." );
+        DEBUG.print( "." );
 
         reconCounter++;
 
@@ -403,9 +478,9 @@ void setup( void ) {
     if ( WiFi.localIP() == IPAddress( 0, 0, 0, 0 ) ) revertToAP = true;
     else {
 
-      DBG_OUTPUT_PORT.println( "" );
-      DBG_OUTPUT_PORT.print( "Connected! IP address: " );
-      DBG_OUTPUT_PORT.println( WiFi.localIP() );
+      DEBUG.println( "" );
+      DEBUG.print( "Connected! IP address: " );
+      DEBUG.println( WiFi.localIP() );
 
     }
 
@@ -413,7 +488,7 @@ void setup( void ) {
 
   if ( revertToAP == true ) {
 
-    DBG_OUTPUT_PORT.println( "Reverting to default AP" );
+    DEBUG.println( "Reverting to default AP" );
     wifiMode = "ap";
     WiFi.mode( WIFI_AP );
     WiFi.softAPConfig( local_IP, gateway, subnet );
@@ -443,10 +518,10 @@ void setup( void ) {
 
     if ( !handleFileRead( server.uri() ) ) {
 
-      DBG_OUTPUT_PORT.printf( "URI not found " );
+      DEBUG.printf( "URI not found " );
 
     }
-    //DBG_OUTPUT_PORT.println( server.uri() );
+    //DEBUG.println( server.uri() );
 
   } );
 
@@ -540,7 +615,7 @@ void setup( void ) {
   });
 
   server.begin();
-  DBG_OUTPUT_PORT.println( "HTTP server started" );
+  DEBUG.println( "HTTP server started" );
 
 }
 
@@ -549,7 +624,7 @@ void loop( void ) {
 
   dnsServer.processNextRequest();
   server.handleClient();
-  if ( DBG_OUTPUT_PORT.available() ) uploadPayload(); //force resend of payload on serial RX
+  if ( DEBUG.available() ) uploadPayload(); //force resend of payload on serial RX
 
   if ( jsCounter == JS_MAX ) {
 

@@ -3,6 +3,9 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Firmware from './views/Firmware.vue';
 import NotFound from './views/NotFound';
+import Credits from './views/Credits';
+import Settings from './views/Settings';
+import Payloads from './views/Payloads';
 
 Vue.use(Router);
 
@@ -16,6 +19,18 @@ export default new Router({
       path: '/firmware/:id',
       props: true,
       component: Firmware,
+    },
+    {
+      path: '/credits',
+      component: Credits,
+    },
+    {
+      path: '/settings',
+      component: Settings,
+    },
+    {
+      path: '/payloads',
+      component: Payloads,
     },
     {
       path: '*',
