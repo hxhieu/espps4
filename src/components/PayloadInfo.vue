@@ -15,7 +15,7 @@
       </gauge-bar>
     </td>
     <td class="delete-col">
-      <span class="btn-delete" @click="deleteMe">×</span>
+      <span class="btn-delete" @click="deleteMe">x</span>
     </td>
   </tr>
 </template>
@@ -68,7 +68,7 @@ export default {
     }
 
     &.delete-col {
-      width: 3em;
+      width: 2em;
       text-align: center;
     }
 
@@ -80,7 +80,7 @@ export default {
     .btn-delete {
       cursor: pointer;
       text-decoration: none;
-      font-size: 3em;
+      font-size: 2em;
       line-height: 1em;
       color: @primary-colour;
       display: block;

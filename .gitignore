@@ -19,5 +19,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-/src/server/espps4/data/*
-!/src/server/espps4/data/.gitkeep
+/src/server/arduino/espps4/data/*
+!/src/server/arduino/espps4/data/.gitkeep
