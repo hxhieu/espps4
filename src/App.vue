@@ -69,6 +69,8 @@ export default {
 
 html,
 body {
+  margin: 0;
+  padding: 0;
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -143,6 +145,7 @@ body {
         display: inline-block;
         margin: 10px 20px;
         font-size: 0.5em;
+        font-weight: bold;
       }
       background: #fff;
     }

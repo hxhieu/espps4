@@ -5,7 +5,7 @@
           <div class="gauge-fill" :style="{'width': pctDisplay, 'background': fill}">
               <div class="current-value" :style="innerTextStyle">{{ currentDisplay }}</div>
           </div>
-          <div class="pct-value" :style="innerTextStyle">{{ pctDisplay }}</div>
+          <div v-if="showPct" class="pct-value" :style="innerTextStyle">{{ pctDisplay }}</div>
       </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default {
     borderThickness: Number,
     borderGap: Number,
     showTotal: Boolean,
+    showPct: Boolean,
   },
 
   created() {
@@ -73,10 +74,10 @@ export default {
         : this.fillColour || '#2c3e50';
     },
     gap() {
-      return this.borderGap || 2;
+      return this.borderGap === undefined ? 2 : this.borderGap;
     },
     borderWidth() {
-      return this.borderThickness || 4;
+      return this.borderThickness === undefined ? 4 : this.borderThickness;
     },
     totalHeight() {
       const bar = this.barHeight || 40;

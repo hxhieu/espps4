@@ -2,7 +2,7 @@
   <div class="firmwares">
     <h1>{{ id }}</h1>
     <div class="clearfix">
-      <a v-for="p in availablePayloads" :key="p.key" class="button pull-left" :href="`${hostAddress}entry/${p.key}`">{{ p.name }}</a>
+      <a v-for="p in availablePayloads" :key="p.key" class="button pull-left" :href="`${$config.host()}entry/${p.key}`">{{ p.name }}</a>
     </div>
   </div>
 </template>
@@ -21,13 +21,6 @@ export default {
     },
     availablePayloads() {
       return this.payloads.filter(f => f.fw === this.id);
-    },
-    hostAddress() {
-      if (process.env.NODE_ENV === 'production') {
-        return '/';
-      } else {
-        return 'http://192.168.0.235/';
-      }
     },
   },
 };

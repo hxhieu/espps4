@@ -1,7 +1,7 @@
 <template>
   <tr class="payload-info">
     <td>
-      <span class="payload-name">{{ payload.name }}</span>
+      <a :href="`${$config.host()}entry/${payload.key}`" class="payload-name">{{ payload.name }}</a>
     </td>
     <td class="gauge-col">
       <gauge-bar
@@ -9,9 +9,9 @@
           :max-value="totalKb"
           :current-value="payload.sizeKb"
           :value-formatter="valueFormatter"
-          :border-thickness="2"
-          :border-gap="2"
-          :bar-height="30">
+          :border-thickness="0"
+          :border-gap="0"
+          :bar-height="40">
       </gauge-bar>
     </td>
     <td class="delete-col">
@@ -45,6 +45,7 @@ export default {
 
 <style lang="less">
 @import '../variables';
+@text-size: 2em;
 
 .payload-info {
   cursor: default;
@@ -54,7 +55,8 @@ export default {
     background: @primary-colour;
     color: #fff;
     td {
-      .btn-delete {
+      .btn-delete,
+      .payload-name {
         color: #fff;
       }
     }
@@ -68,26 +70,23 @@ export default {
     }
 
     &.delete-col {
-      width: 2em;
+      width: @text-size;
       text-align: center;
     }
 
     .payload-name {
       padding: 0 20px;
-      font-size: 1.5em;
+      font-size: @text-size;
+      text-decoration: none;
     }
 
     .btn-delete {
       cursor: pointer;
       text-decoration: none;
-      font-size: 2em;
+      font-size: @text-size;
       line-height: 1em;
-      color: @primary-colour;
+      color: @secondary-colour;
       display: block;
-
-      &:hover {
-        color: @secondary-colour;
-      }
     }
   }
 }

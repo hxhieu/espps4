@@ -3,9 +3,15 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-import HttpClient from '@/plugins/http-client';
+import 'pretty-checkbox/dist/pretty-checkbox.css';
 
+import PrettyCheckbox from 'pretty-checkbox-vue';
+import HttpClient from '@/plugins/http-client';
+import Configuration from '@/plugins/configuration';
+
+Vue.use(PrettyCheckbox);
 Vue.use(HttpClient);
+Vue.use(Configuration);
 
 //import 'bulma/css/bulma.css';                       // 160Kb
 //import 'vuetify/dist/vuetify.css';                  // 245Kb
