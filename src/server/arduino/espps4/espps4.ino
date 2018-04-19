@@ -531,6 +531,11 @@ void setup( void ) {
 
   } );
 
+  server.on("/upload", HTTP_POST, [] () {
+    HTTPUpload upload = server.upload();
+    DEBUG.println(upload.filename);
+  });
+
   server.on( "/settings", HTTP_GET, [] () {
 
     String sPage;

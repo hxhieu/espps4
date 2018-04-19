@@ -72,6 +72,8 @@ export const HttpClient = function() {
     get('file-system', callback);
   };
 
+  //const uploadPayload = 
+
   return {
     // get,
     // post,

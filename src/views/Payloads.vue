@@ -16,8 +16,10 @@
         <div class="firms">
           <p-radio v-for="f in firmwares" :key="f" :value="f" v-model="selectedFirm" class="p-default" name="firmware" color="warning-o">{{ f }}</p-radio>
           <span v-if="uploadSupported">
-            <a href="" class="button" @click.prevent="$refs.upload.click()">Upload</a>
-            <input type="file" name="upload" ref="upload" @change="uploadFile" />
+            <form ref="form" :action="`${$config.host()}upload`" method="POST" enctype="multipart/form-data">
+              <a href="" class="button" @click.prevent="$refs.upload.click()">Upload</a>
+              <input type="file" name="upload" ref="upload" @change="uploadFile" />
+            </form>
           </span>
           <div class="no-upload" v-else>
             Upload payloads not supported, try Chrome.
@@ -64,21 +66,26 @@ export default {
       console.log(key);
     },
     uploadFile() {
-      var f = this.$refs.upload.files[0];
+      this.$refs.form.submit();
+      // var f = this.$refs.upload.files[0];
 
-      if (f) {
-        var r = new FileReader();
-        r.onload = function(e) {
-          var contents = e.target.result;
-          const payloadName = prompt('New payload name?');
-          if (payloadName) {
-            console.log(contents);
-          }
-        };
-        r.readAsText(f);
-      } else {
-        alert('Failed to load file');
-      }
+      // if (f) {
+      //   var r = new FileReader();
+      //   r.onload = e => {
+      //     var contents = e.target.result;
+      //     const payloadName = prompt('New payload name?');
+      //     if (payloadName) {
+      //       console.log(contents);
+      //     } else {
+      //       alert('No payload name specified, aborted.');
+      //     }
+
+      //     this.$refs.upload.value = null;
+      //   };
+      //   r.readAsText(f);
+      // } else {
+      //   alert('Failed to load file');
+      // }
     },
   },
   computed: {
@@ -105,6 +112,10 @@ export default {
 
     .firms {
       padding: 20px;
+
+      form {
+        display: inline-block;
+      }
 
       input[type='file'] {
         display: none;
