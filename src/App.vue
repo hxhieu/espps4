@@ -3,7 +3,7 @@
     <router-view class="main"></router-view>
     <section class="menu">
       <router-link to="/">HOME</router-link>
-      <router-link to="/payloads">PAYLOADS</router-link>
+      <router-link to="/payloads/4.55">PAYLOADS</router-link>
       <router-link to="/credits">CREDITS</router-link>
       <router-link to="/settings">SETTINGS</router-link>
     </section>

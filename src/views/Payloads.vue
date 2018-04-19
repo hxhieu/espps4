@@ -14,11 +14,21 @@
         <label class="hints">*There are some spaces allocated for the user interface code</label>
         <h3>Manage</h3>
         <div class="firms">
-          <p-radio v-for="f in firmwares" :key="f" :value="f" v-model="selectedFirm" class="p-default" name="firmware" color="warning-o">{{ f }}</p-radio>
+          <p-radio v-for="f in firmwares"
+            :key="f" :value="f"
+            v-model="selectedFirm"
+            @change="$router.push(`/payloads/${selectedFirm}`)"
+            class="p-default"
+            name="firmware"
+            color="warning-o">
+            {{ f }}
+          </p-radio>
           <span v-if="uploadSupported">
             <form ref="form" :action="`${$config.host()}upload`" method="POST" enctype="multipart/form-data">
               <a href="" class="button" @click.prevent="$refs.upload.click()">Upload</a>
               <input type="file" name="upload" ref="upload" @change="uploadFile" />
+              <input type="hidden" name="uploadName" :value="uploadName" />
+              <input type="hidden" name="redirectUrl" :value="redirectUrl" />
             </form>
           </span>
           <div class="no-upload" v-else>
@@ -49,11 +59,17 @@ export default {
     [GaugeBar.name]: GaugeBar,
     [PayloadInfo.name]: PayloadInfo,
   },
+  props: {
+    firm: String,
+  },
   data: () => ({
     info: {},
-    selectedFirm: '4.55',
+    selectedFirm: null,
+    uploadName: null,
+    redirectUrl: null,
   }),
   created() {
+    this.selectedFirm = this.firm;
     this.$http.getFileSystem(result => {
       this.info = result;
     });
@@ -66,7 +82,17 @@ export default {
       console.log(key);
     },
     uploadFile() {
-      this.$refs.form.submit();
+      const payloadName = prompt('New payload name?');
+      if (payloadName) {
+        this.uploadName = `/payload_${this.firm}_${payloadName}.js`;
+        this.redirectUrl = window.location.href;
+        this.$nextTick(() => {
+          this.$refs.form.submit();
+        });
+      } else {
+        alert('No payload name specified, aborted.');
+      }
+
       // var f = this.$refs.upload.files[0];
 
       // if (f) {
@@ -96,7 +122,7 @@ export default {
         .reduce((x, y) => (x.includes(y) ? x : [...x, y]), []);
     },
     firmPayloads() {
-      return this.payloads.filter(p => p.fw === this.selectedFirm);
+      return this.payloads.filter(p => p.fw === this.firm);
     },
     uploadSupported() {
       return window.File && window.FileReader && window.FileList && window.Blob;

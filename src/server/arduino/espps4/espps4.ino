@@ -289,7 +289,7 @@ void startSPIFFS(void) {
   Dir dir = SPIFFS.openDir("/");
   DEBUG.println("SPIFFS directory {/} :");
   while (dir.next()) {
-    DEBUG.print("  "); DEBUG.println(dir.fileName());
+    DEBUG.print("  "); DEBUG.print(dir.fileName()); DEBUG.print(" / "); DEBUG.println(dir.fileSize());
   }
 
   DEBUG.printf("__________________________\n\n");
@@ -532,8 +532,38 @@ void setup( void ) {
   } );
 
   server.on("/upload", HTTP_POST, [] () {
-    HTTPUpload upload = server.upload();
-    DEBUG.println(upload.filename);
+    if (server.args() > 0 ) {
+      HTTPUpload upload = server.upload();
+      String payloadName;
+      String redirectUrl;
+      for ( uint8_t i = 0; i < server.args(); i++ ) {
+        DEBUG.println(server.arg(i));
+        if (server.argName(i) == "uploadName") {
+          payloadName = server.arg(i);
+        }
+
+        if (server.argName(i) == "redirectUrl") {
+          redirectUrl = server.arg(i);
+        }
+      }
+
+      DEBUG.print("*****"); DEBUG.print(payloadName); DEBUG.println("*****");
+      File f = SPIFFS.open(payloadName, "w");
+      if (f) {
+        f.write(upload.buf, upload.totalSize);
+        f.close();
+      }
+      else {
+        DEBUG.println("File upload failed");
+      }
+
+      server.sendHeader("Location", redirectUrl, true);
+      server.send ( 302, "text/plain", "");
+      
+      return;
+    }
+
+    server.send ( 400, "text/plain", "Bad request - Missing payload name");
   });
 
   server.on( "/settings", HTTP_GET, [] () {

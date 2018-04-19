@@ -17,7 +17,7 @@
           ESP8266 Sketch by <a href='https://github.com/treyjazz/ESPS4ExploitServer'>treyjazz</a>
         </li>
         <li>
-          Awesome payloads by <a href='https://github.com/xvortex'>Vortex</a>
+          Payloads by <a href='https://github.com/xvortex'>Vortex</a>
         </li>
       </ul>
       <h3>AND everyone involved and loved the PS4 hacking scene!</h3>

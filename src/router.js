@@ -29,7 +29,8 @@ export default new Router({
       component: Settings,
     },
     {
-      path: '/payloads',
+      path: '/payloads/:firm',
+      props: true,
       component: Payloads,
     },
     {

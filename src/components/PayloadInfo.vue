@@ -66,7 +66,7 @@ export default {
     padding: 5px;
     border-bottom: 1px solid;
     &.gauge-col {
-      width: 25%;
+      width: 15%;
     }
 
     &.delete-col {
